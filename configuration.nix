@@ -127,6 +127,73 @@
     yazi
     zed-editor
   ];
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+
+  # Keyd config
+  services.keyd = {
+    enable = true;
+    keyboards = {
+      default = {
+        ids = [ "*" ];
+        settings = {
+          main = {
+            # lettermod(<layer>, <key>, <idle timeout>, <hold timeout>)
+            a = "lettermod(alt, a, 150, 200)";
+            s = "lettermod(meta, s, 150, 200)";
+            d = "lettermod(shift, d, 150, 200)";
+            f = "lettermod(control, f, 150, 200)";
+
+            j = "lettermod(control, j, 150, 200)";
+            k = "lettermod(shift, k, 150, 200)";
+            l = "lettermod(meta, l, 150, 200)";
+            semicolon = "lettermod(alt, ;, 150, 200)";
+
+            # Aktivasi Layer Prog
+            # Menahan Caps Lock akan mengaktifkan layer [prog]
+            capslock = "layer(prog)";
+          };
+
+          prog = {
+
+            # Navigasi ala Vim
+            h = "left";
+            j = "down";
+            k = "up";
+            l = "right";
+
+            # Simbol-simbol utama Prog
+            n = "macro(->)";
+            p = "macro(<-)";
+            c = "macro(::)";
+            g = "macro(=>)";
+            ";" = "macro(:=)";
+            t = "macro(|>)";
+            f = "macro(<|)";
+
+            # Simbol umum lainnya
+            space = "_";
+            d = "$";
+            b = "\\";
+            e = "=";
+            v = "|";
+            a = "&";
+            q = "+";
+            w = "*";
+
+            # Pasangan kurung
+            u = "(";
+            i = ")";
+
+            # Easy control
+            "," = "backspace";
+            "." = "delete";
+          };
+        };
+      };
+    };
+  };
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."litfill" = {
     isNormalUser = true;
