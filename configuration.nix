@@ -148,6 +148,17 @@
       wezterm
       wget
       yazi
+      file
+      rsync
+      shellcheck
+      sd
+      ncdu
+      iotop
+      nethogs
+      lm_sensors
+      nh
+      nixfmt
+      nix-output-monitor
     ];
 
     # Enable the OpenSSH daemon.
