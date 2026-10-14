@@ -243,6 +243,14 @@
         libXfixes
       ]);
   };
+  # This value determines the NixOS release from which the default settings for
+  # stateful data, like file locations and database versions on your system
+  # were taken. It's perfectly fine and recommended to leave this value at the
+  # release version of the first install of this system.  Before changing this
+  # value read the documentation for this option (e.g. man configuration.nix or
+  # on https://nixos.org/nixos/options.html).
+  system.stateVersion = "26.05"; # Did you read the comment?
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."litfill" = {
     isNormalUser = true;
@@ -254,152 +262,5 @@
     packages = [
       #pkgs.kdePackages.kate
     ];
-
-    # Install firefox.
-    programs.firefox.enable = true;
-    programs.kdeconnect.enable = true;
-
-    # nix-ld
-    programs.nix-ld = {
-      enable = true;
-      libraries =
-        options.programs.nix-ld.libraries.default
-        ++ (with pkgs; [
-          fontconfig
-          freetype
-          glib
-          libGL
-          libX11
-          libXcursor
-          libXi
-          libXrandr
-          libglvnd
-          libsecret
-          libtinfo
-          libxcb
-          libxkbcommon
-          stdenv.cc.cc.lib
-          vulkan-loader
-          wayland
-
-          webkitgtk_4_1
-        ]);
-    };
-
-    # Allow unfree packages
-    nixpkgs.config.allowUnfree = true;
-
-    # List packages installed in system profile. To search, run:
-    # $ nix search wget
-    environment.systemPackages = with pkgs; [
-      bat
-      btop
-      delta
-      eza
-      fd
-      fzf
-      git
-      glib
-      gnupg
-      helix
-      imv
-      mpv
-      pass
-      ripgrep
-      tailscale
-      tmux
-      vim
-      wasmtime
-      wezterm
-      wget
-      yazi
-      file
-      rsync
-      shellcheck
-      sd
-      ncdu
-      iotop
-      nethogs
-      lm_sensors
-      nh
-      nixfmt
-      nix-output-monitor
-    ];
-
-    # Enable the OpenSSH daemon.
-    services.openssh.enable = true;
-
-    # Keyd config
-    services.keyd = {
-      enable = true;
-      keyboards = {
-        default = {
-          ids = [ "*" ];
-          settings = {
-            main = {
-              # lettermod(<layer>, <key>, <idle timeout>, <hold timeout>)
-              a = "lettermod(alt, a, 150, 200)";
-              s = "lettermod(meta, s, 150, 200)";
-              d = "lettermod(shift, d, 150, 200)";
-              f = "lettermod(control, f, 150, 200)";
-
-              j = "lettermod(control, j, 150, 200)";
-              k = "lettermod(shift, k, 150, 200)";
-              l = "lettermod(meta, l, 150, 200)";
-              semicolon = "lettermod(alt, ;, 150, 200)";
-
-              # Aktivasi Layer Prog
-              # Menahan Caps Lock akan mengaktifkan layer [prog]
-              capslock = "layer(prog)";
-            };
-
-            prog = {
-
-              # Navigasi ala Vim
-              h = "left";
-              j = "down";
-              k = "up";
-              l = "right";
-
-              # Simbol-simbol utama Prog
-              n = "macro(->)";
-              p = "macro(<-)";
-              c = "macro(::)";
-              g = "macro(=>)";
-              ";" = "macro(:=)";
-              t = "macro(|>)";
-              f = "macro(<|)";
-
-              # Simbol umum lainnya
-              space = "_";
-              d = "$";
-              b = "\\";
-              e = "=";
-              v = "|";
-              a = "&";
-              q = "+";
-              w = "*";
-
-              # Pasangan kurung
-              u = "(";
-              i = ")";
-
-              # Easy control
-              "," = "backspace";
-              "." = "delete";
-            };
-          };
-        };
-      };
-    };
-
-    # This value determines the NixOS release from which the default settings for
-    # stateful data, like file locations and database versions on your system
-    # were taken. It‘s perfectly fine and recommended to leave this value at the
-    # release version of the first install of this system.  Before changing this
-    # value read the documentation for this option (e.g. man configuration.nix or
-    # on https://nixos.org/nixos/options.html).
-    system.stateVersion = "26.05"; # Did you read the comment?
-
   };
 }
