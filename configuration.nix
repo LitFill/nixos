@@ -194,6 +194,55 @@
       };
     };
   };
+
+  # Install firefox.
+  programs.firefox.enable = true;
+  programs.kdeconnect.enable = true;
+
+  # nix-ld
+  programs.nix-ld = {
+    enable = true;
+    libraries =
+      options.programs.nix-ld.libraries.default
+      ++ (with pkgs; [
+        fontconfig
+        freetype
+        glib
+        libGL
+        libX11
+        libXcursor
+        libXi
+        libXrandr
+        libglvnd
+        libsecret
+        libtinfo
+        libxcb
+        libxkbcommon
+        stdenv.cc.cc.lib
+        vulkan-loader
+        wayland
+
+        webkitgtk_4_1
+
+        # Helium (Chromium-based) needs these
+        nss
+        nspr
+        atk
+        at-spi2-atk
+        at-spi2-core
+        dbus
+        cups
+        expat
+        cairo
+        pango
+        alsa-lib
+        libgbm
+        libXext
+        libXcomposite
+        libXdamage
+        libXfixes
+      ]);
+  };
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."litfill" = {
     isNormalUser = true;
