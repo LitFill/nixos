@@ -78,6 +78,55 @@
     jack.enable = true;
   };
 
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    aria2
+    bat
+    btop
+    delta
+    difftastic
+    eza
+    fastfetch
+    fd
+    file
+    fzf
+    git
+    glib
+    glow
+    gnupg
+    helix
+    imv
+    iotop
+    lm_sensors
+    mpv
+    ncdu
+    nerd-fonts.monaspace
+    nethogs
+    nh
+    niri
+    nix-output-monitor
+    nixfmt
+    pass
+    passExtensions.pass-otp
+    ripgrep
+    rlwrap
+    rsync
+    sd
+    shellcheck
+    tailscale
+    tealdeer
+    tmux
+    vim
+    wasmtime
+    wezterm
+    wget
+    yazi
+    zed-editor
+  ];
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."litfill" = {
     isNormalUser = true;
