@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  config,
+  # config,
   pkgs,
   options,
   ...
@@ -31,43 +31,19 @@
     ];
   };
 
-  #=== BEGIN for hdmi black screen ===#
-  #services.journald.storage = "persistent";
-
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # Boot options & Early KMS
-  #boot.initrd.kernelModules = [ "i915" ];
-  #boot.plymouth.enable = false;
-
-  boot.kernelParams = [
-    #  "snd_hda_intel.enable_msi=1" # HDMI audio fix
-    #  "i915.enable_psr=0"          # Disable Panel Self-Refresh (prevents
-    # flicker/black screens)
-  ];
 
   # Graphics & Hardware Acceleration
   hardware.graphics = {
     enable = true;
-    # enable32Bit = true;
-    # extraPackages = with pkgs; [
-    #   intel-media-driver
-    #   intel-vaapi-driver
-    #   libvdpau-va-gl
-    # ];
   };
 
   # Display Manager & Desktop
   services.displayManager.sddm = {
     wayland.enable = true;
   };
-  #=== END for hdmi black screen ===#
 
   networking.hostName = "perihelion"; # Define your hostname.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -77,10 +53,6 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "id_ID.UTF-8";
-
-  # Enable the X11 windowing system.  You can disable this if you're only using
-  # the Wayland session.
-  #services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
@@ -103,16 +75,8 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
     jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is
-    # enabled by default, no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."litfill" = {
@@ -122,152 +86,144 @@
       "networkmanager"
       "wheel"
     ];
-    packages = with pkgs; [
-      kdePackages.kate
-      wezterm
-      #  thunderbird
+    packages = [
+      #pkgs.kdePackages.kate
     ];
-  };
 
-  # Install firefox.
-  programs.firefox.enable = true;
-  programs.kdeconnect.enable = true;
+    # Install firefox.
+    programs.firefox.enable = true;
+    programs.kdeconnect.enable = true;
 
-  # nix-ld
-  programs.nix-ld = {
-    enable = true;
-    libraries =
-      options.programs.nix-ld.libraries.default
-      ++ (with pkgs; [
-        fontconfig
-        freetype
-        glib
-        libGL
-        libX11
-        libXcursor
-        libXi
-        libXrandr
-        libglvnd
-        libsecret
-        libtinfo
-        libxcb
-        libxkbcommon
-        stdenv.cc.cc.lib
-        vulkan-loader
-        wayland
+    # nix-ld
+    programs.nix-ld = {
+      enable = true;
+      libraries =
+        options.programs.nix-ld.libraries.default
+        ++ (with pkgs; [
+          fontconfig
+          freetype
+          glib
+          libGL
+          libX11
+          libXcursor
+          libXi
+          libXrandr
+          libglvnd
+          libsecret
+          libtinfo
+          libxcb
+          libxkbcommon
+          stdenv.cc.cc.lib
+          vulkan-loader
+          wayland
 
-        webkitgtk_4_1
-      ]);
-  };
+          webkitgtk_4_1
+        ]);
+    };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+    # Allow unfree packages
+    nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim
-    wget
-    # unzip
-    # bun
-    # pnpm
-    git
-    # wezterm
-    tailscale
+    # List packages installed in system profile. To search, run:
+    # $ nix search wget
+    environment.systemPackages = with pkgs; [
+      bat
+      btop
+      delta
+      eza
+      fd
+      fzf
+      git
+      glib
+      gnupg
+      helix
+      imv
+      mpv
+      pass
+      ripgrep
+      tailscale
+      tmux
+      vim
+      wasmtime
+      wezterm
+      wget
+      yazi
+    ];
 
-    glib
-    wasmtime
-  ];
+    # Enable the OpenSSH daemon.
+    services.openssh.enable = true;
 
-  # Some programs need SUID wrappers, can be configured further or are started
-  # in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+    # Keyd config
+    services.keyd = {
+      enable = true;
+      keyboards = {
+        default = {
+          ids = [ "*" ];
+          settings = {
+            main = {
+              # lettermod(<layer>, <key>, <idle timeout>, <hold timeout>)
+              a = "lettermod(alt, a, 150, 200)";
+              s = "lettermod(meta, s, 150, 200)";
+              d = "lettermod(shift, d, 150, 200)";
+              f = "lettermod(control, f, 150, 200)";
 
-  # List services that you want to enable:
+              j = "lettermod(control, j, 150, 200)";
+              k = "lettermod(shift, k, 150, 200)";
+              l = "lettermod(meta, l, 150, 200)";
+              semicolon = "lettermod(alt, ;, 150, 200)";
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+              # Aktivasi Layer Prog
+              # Menahan Caps Lock akan mengaktifkan layer [prog]
+              capslock = "layer(prog)";
+            };
 
-  # Keyd config
-  services.keyd = {
-    enable = true;
-    keyboards = {
-      default = {
-        ids = [ "*" ];
-        settings = {
-          main = {
-            # lettermod(<layer>, <key>, <idle timeout>, <hold timeout>)
-            a = "lettermod(alt, a, 150, 200)";
-            s = "lettermod(meta, s, 150, 200)";
-            d = "lettermod(shift, d, 150, 200)";
-            f = "lettermod(control, f, 150, 200)";
+            prog = {
 
-            j = "lettermod(control, j, 150, 200)";
-            k = "lettermod(shift, k, 150, 200)";
-            l = "lettermod(meta, l, 150, 200)";
-            semicolon = "lettermod(alt, ;, 150, 200)";
+              # Navigasi ala Vim
+              h = "left";
+              j = "down";
+              k = "up";
+              l = "right";
 
-            # Aktivasi Layer Prog
-            # Menahan Caps Lock akan mengaktifkan layer [prog]
-            capslock = "layer(prog)";
-          };
+              # Simbol-simbol utama Prog
+              n = "macro(->)";
+              p = "macro(<-)";
+              c = "macro(::)";
+              g = "macro(=>)";
+              ";" = "macro(:=)";
+              t = "macro(|>)";
+              f = "macro(<|)";
 
-          prog = {
+              # Simbol umum lainnya
+              space = "_";
+              d = "$";
+              b = "\\";
+              e = "=";
+              v = "|";
+              a = "&";
+              q = "+";
+              w = "*";
 
-            # Navigasi ala Vim
-            h = "left";
-            j = "down";
-            k = "up";
-            l = "right";
+              # Pasangan kurung
+              u = "(";
+              i = ")";
 
-            # Simbol-simbol utama Prog
-            n = "macro(->)";
-            p = "macro(<-)";
-            c = "macro(::)";
-            g = "macro(=>)";
-            ";" = "macro(:=)";
-            t = "macro(|>)";
-            f = "macro(<|)";
-
-            # Simbol umum lainnya
-            space = "_";
-            d = "$";
-            b = "\\";
-            e = "=";
-            v = "|";
-            a = "&";
-            q = "+";
-            w = "*";
-
-            # Pasangan kurung
-            u = "(";
-            i = ")";
-
-            # Easy control
-            "," = "backspace";
-            "." = "delete";
+              # Easy control
+              "," = "backspace";
+              "." = "delete";
+            };
           };
         };
       };
     };
+
+    # This value determines the NixOS release from which the default settings for
+    # stateful data, like file locations and database versions on your system
+    # were taken. It‘s perfectly fine and recommended to leave this value at the
+    # release version of the first install of this system.  Before changing this
+    # value read the documentation for this option (e.g. man configuration.nix or
+    # on https://nixos.org/nixos/options.html).
+    system.stateVersion = "26.05"; # Did you read the comment?
+
   };
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default settings for
-  # stateful data, like file locations and database versions on your system
-  # were taken. It‘s perfectly fine and recommended to leave this value at the
-  # release version of the first install of this system.  Before changing this
-  # value read the documentation for this option (e.g. man configuration.nix or
-  # on https://nixos.org/nixos/options.html).
-  system.stateVersion = "26.05"; # Did you read the comment?
-
 }
