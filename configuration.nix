@@ -6,12 +6,13 @@
   # config,
   pkgs,
   options,
+  autolith,
+  koki,
   ...
 }:
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
@@ -31,7 +32,13 @@
     ];
   };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Automatic garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "03:00";
+  };
+
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
 
   # Graphics & Hardware Acceleration
   hardware.graphics = {
@@ -51,12 +58,35 @@
   # Set your time zone.
   time.timeZone = "Asia/Jakarta";
 
+  # Firewall: allow KDE Connect (1714-1764 TCP/UDP)
+  networking.firewall = {
+    enable = true;
+    allowedTCPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
+    allowedUDPPortRanges = [
+      {
+        from = 1714;
+        to = 1764;
+      }
+    ];
+  };
+
+  # Tailscale VPN
+  services.tailscale.enable = true;
+
   # Select internationalisation properties.
   i18n.defaultLocale = "id_ID.UTF-8";
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # ZRAM swap for memory pressure relief
+  zramSwap.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -126,11 +156,24 @@
     wget
     yazi
     zed-editor
+    # autolith (github:lambda-symbolics/autolith)
+    autolith.packages.x86_64-linux.default
+
+    # koka package manager (github:LitFill/koki)
+    koki.packages.x86_64-linux.default
   ];
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      ChallengeResponseAuthentication = false;
+      UsePAM = false;
+      KbdInteractiveAuthentication = false;
+    };
+  };
   # Keyd config
   services.keyd = {
     enable = true;
