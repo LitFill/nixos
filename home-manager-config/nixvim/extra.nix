@@ -54,12 +54,14 @@
     --     trans.toggle(true)
     -- end
 
+    if not vim.g.neotern then
+      require("vim._core.ui2").enable()
+    end
+
     vim.api.nvim_set_hl(0, "MatchParen", { bg = "darkblue" })
 
     -- matugen theming disabled for now (no themes generated currently)
     -- require "matugen" .setup()
-
-    require("vim._core.ui2").enable()
 
     -- conjure's Common Lisp client calls `conjure.log.append` with a bare string
     -- when no swank connection is up, but the log API expects a list of lines.
