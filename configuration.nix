@@ -157,10 +157,16 @@
     yazi
     zed-editor
     # autolith (github:lambda-symbolics/autolith)
-    autolith.packages.x86_64-linux.default
+    # autolith.packages.x86_64-linux.default
 
     # koka package manager (github:LitFill/koki)
     koki.packages.x86_64-linux.default
+
+    # for NanoBot Channel
+    curl
+    python3
+
+    kdePackages.kdialog
   ];
 
   # Enable the OpenSSH daemon.
