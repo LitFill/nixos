@@ -11,7 +11,6 @@
 
     nixvim.url = "github:nix-community/nixvim";
 
-    autolith.url = "github:lambda-symbolics/autolith";
     koki.url = "github:LitFill/koki";
   };
 
@@ -21,7 +20,6 @@
       nixpkgs,
       home-manager,
       nixvim,
-      autolith,
       koki,
       ...
     }:
@@ -34,7 +32,7 @@
     {
       nixosConfigurations.perihelion = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit autolith koki; };
+        specialArgs = { inherit koki; };
         modules = [
           ./configuration.nix
           home-manager.nixosModules.home-manager
