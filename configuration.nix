@@ -167,6 +167,7 @@
     python3
 
     kdePackages.kdialog
+    krita
   ];
 
   # Enable the OpenSSH daemon.
