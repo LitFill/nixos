@@ -36,16 +36,24 @@
             vim.opt_local.iskeyword:append("-")
         end
       '';
+      c-like-comment = lib.nixvim.utils.mkRaw ''
+        function()
+            vim.bo.commentstring = "// %s"
+            vim.bo.comments      = "s1:/*,mb:*,ex:*/,://"
+        end
+      '';
     in
     [
       (mkAuCmd "Trim on save" "BufWritePre" "*" trimOnSafe)
       (mkAuCmd "Setup Haskell" "FileType" [ "haskell" "cabal" "*.hs" "*.cabal" ] setupHaskell)
       (mkAuCmd "Setup Idris 2" "FileType" [ "idris" "idris2" "*.idr" "*.ipkg" ] setupIdris2)
+      (mkAuCmd "Path Crumb on winbar" [ "BufEnter" "BufWinEnter" ] "*" pathCrumb)
+      (mkAuCmd "Ensure signcolumn is always 'yes:2' in normal buffers" "BufEnter" "*" signColumn)
 
       # These filetypes use kebab-case identifiers, so `-` counts as a word character
       # and w/b/e (also ciw/diw) stop at real word boundaries instead of every dash.
       (mkAuCmd "Kebab-case word motions" "FileType" [ "koka" "nu" "idris2" "nix" ] kebabWords)
-      (mkAuCmd "Path Crumb on winbar" [ "BufEnter" "BufWinEnter" ] "*" pathCrumb)
-      (mkAuCmd "Ensure signcolumn is always 'yes:2' in normal buffers" "BufEnter" "*" signColumn)
+
+      (mkAuCmd "C-like comments" "FileType" [ "koka" ] c-like-comment)
     ];
 }
