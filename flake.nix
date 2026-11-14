@@ -1,13 +1,11 @@
 {
-  description = "NixOS config for perihelion";
+  description = "LitFill's dendritic NixOS configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
+    wrappers.url = "github:nix-community/nix-wrapper-modules";
 
     nixvim.url = "github:nix-community/nixvim";
 
@@ -15,46 +13,12 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      nixvim,
-      koki,
-      ...
-    }:
+    inputs:
     let
-      hmConfigPath = ./home-manager-config;
-      hmFilesPath = ./home-manager-files;
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      inherit (inputs) import-tree;
+      inherit (inputs.flake-parts.lib) mkFlake;
     in
-    {
-      nixosConfigurations.perihelion = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit koki; };
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.litfill = import ./users/litfill.nix {
-              inherit nixpkgs nixvim;
-              lib = nixpkgs.lib;
-              hmConfigPath = hmConfigPath;
-              hmFilesPath = hmFilesPath;
-            };
-          }
-        ];
-      };
-
-      homeConfigurations.litfill = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-          nixvim.homeModules.nixvim
-          ./users/litfill-hm.nix
-        ];
-      };
-    };
+    mkFlake {
+      inherit inputs;
+    } (import-tree ./modules);
 }
