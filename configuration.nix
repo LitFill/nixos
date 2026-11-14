@@ -6,7 +6,7 @@
   # config,
   pkgs,
   options,
-  autolith,
+  # autolith,
   koki,
   ...
 }:
