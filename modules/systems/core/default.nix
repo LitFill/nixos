@@ -10,6 +10,7 @@ in
         modules = with nixosModules; [
           user
           bootloader
+          nix-settings
         ];
       in
       {
