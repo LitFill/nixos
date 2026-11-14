@@ -7,6 +7,7 @@
           efi = {
             canTouchEfiVariables = true;
           };
+          systemd-boot.enable = true;
           grub = {
             efiSupport = true;
             device = "nodev";
