@@ -10,6 +10,9 @@
           nushell
           starship
 
+          plasmaDE
+          kdeconnect
+
           tailscale
         ];
       in
