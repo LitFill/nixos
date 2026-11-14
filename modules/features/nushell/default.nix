@@ -21,6 +21,7 @@
     }:
     let
       inherit (inputs.wrappers.wrappers.nushell) wrap;
+      inherit (lib.types) attrsOf nullOr str;
       inherit (lib)
         concatStringsSep
         filterAttrs
@@ -28,12 +29,11 @@
         mapAttrsToList
         mkBefore
         mkOption
-        types
         ;
 
       aliasModule = { config, ... }: {
         options.nushellAliases = mkOption {
-          type = with types; attrsOf (nullOr str);
+          type = attrsOf (nullOr str);
           default = { };
           description = "Alias nushell: nama -> perintah. Nilai null diabaikan";
         };
