@@ -1,6 +1,6 @@
-flake.lock
 result
 result-*
 squashfs-root
 hardware-configuration.nix
 *.log
+nixos.qcow2
