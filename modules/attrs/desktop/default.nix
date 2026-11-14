@@ -8,6 +8,7 @@
           networking
 
           nushell
+          starship
         ];
       in
       {
