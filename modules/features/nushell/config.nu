@@ -1,5 +1,25 @@
-# Nushell Utility Functions
-# This file is managed by Home Manager and Conductor.
+# Nushell Config
+
+$env.config.show_banner     = false
+$env.config.recursion_limit = 100
+$env.config.edit_mode       = "vi"
+
+$env.config.table.mode = "light"
+
+$env.config.history.file_format   = "sqlite"
+$env.config.history.isolation     = false
+$env.config.history.max_size      = 10000000
+$env.config.history.sync_on_enter = true
+
+$env.config.cursor_shape.emacs     = "line"
+$env.config.cursor_shape.vi_insert = "line"
+$env.config.cursor_shape.vi_normal = "block"
+
+$env.config.completions.algorithm      = "substring"
+$env.config.completions.sort           = "smart"
+$env.config.completions.case_sensitive = false
+$env.config.completions.quick          = true
+$env.config.completions.partial        = true
 
 # --- Navigation Functions ---
 
@@ -36,7 +56,6 @@ def _list_dirs [path: path] {
     }
     $dirs
 }
-
 
 # Fuzzy find a directory and cd into it.
 #
@@ -101,18 +120,16 @@ export def lss [
     ls -l $path | select name type size mode modified
 }
 
-
-# Show indented content of a file.
+# Show content of a file inside a code fence.
 #
 # Examples:
-#   show README.md
+#   show ext README.md
 export def "show ext" [
     fname: path # The file to display
 ] {
     let content = (
         open --raw $fname
         | lines
-        | each { |line| $"($line)" }
         | str join "\n"
     )
     let ext = ($fname | path parse | get extension)
@@ -122,24 +139,23 @@ export def "show ext" [
 def _format_file [file: path, pretty: bool, max_lines: int] {
     let lines = (open --raw $file | lines)
     let total = ($lines | length)
-    let limit = if $max_lines > 0 { $max_lines } else { $total }
-    let shown = ($lines | first $limit)
-    let body = ($shown | each { |l| if $pretty { $"    ($l)" } else { $l } } | str join "\n")
-    let trailer = if ($limit < $total) {
-        if $pretty {
-            $"\n    (ansi yellow)... [showing ($limit) of ($total) lines](ansi reset)"
-        } else {
-            "\n```\n" + $"(ansi yellow)... [showing ($limit) of ($total) lines](ansi reset)"
-        }
-    } else { "" }
+    let limit = if $max_lines > 0 { $max_lines } else $total
+    let body = (
+        $lines | first $limit
+        | each { |l| if $pretty { $"    ($l)" } else $l }
+        | str join "\n"
+    )
+    let note = if $limit < $total { $"... [showing ($limit) of ($total) lines]" } else ""
+
     if $pretty {
-        $"(ansi cyan)─── ($file)(ansi reset)\n\n($body)($trailer)\n"
+        let tail = if ($note | is-empty) { "" } else $"\n    (ansi yellow)($note)(ansi reset)"
+        $"(ansi cyan)─── ($file)(ansi reset)\n\n($body)($tail)\n"
     } else {
         let ext = ($file | path parse | get extension)
-        $"```($ext) ($file)\n($body)($trailer)\n```\n"
+        let tail = if ($note | is-empty) { "" } else $"\n($note)"
+        $"```($ext) ($file)\n($body)($tail)\n```\n"
     }
 }
-
 
 # Show content of all files recursively, with optional filters.
 #
@@ -157,12 +173,6 @@ export def glimpse [
     --hidden               # Include hidden files (those starting with '.')
     --pretty               # do not use ``` fence
 ] {
-    let glob_flags = if $hidden {
-        {no_dir: true}
-    } else {
-        {no_dir: true, no_symlink: false}
-    }
-
     let pattern = ($path | path join "**/*")
 
     let all_files = (
@@ -175,7 +185,7 @@ export def glimpse [
             where { |f|
                 ($f | path parse | get extension) == $ext
             }
-        } else { $in }
+        } else $in
         | sort
     )
 
@@ -198,35 +208,35 @@ export def clean-lines [] {
     $in | lines | str trim | where ($it | is-not-empty)
 }
 
-
 # Flatten a nested record or list into a table of key-value pairs.
 #
 # Examples:
-#   {a: {b: 1}} | to-kv
-#   [1, {c: 2}] | to-kv
+#   {a: {b: 1}} | to-kv         # => [[key value]; ["a.b" 1]]
+#   [1, {c: 2}] | to-kv         # => [[key value]; ["0" 1] ["1.c" 2]]
+#   [{a: 1} {a: 2}] | to-kv     # => [[key value]; ["0.a" 1] ["1.a" 2]]
 export def to-kv [
     prefix: string = "" # Optional prefix for keys
 ] {
     let input = $in
-    let type = ($input | describe)
+    let join = {|k| if ($prefix | is-empty) { $k } else { $"($prefix).($k)" } }
 
-    if ($type =~ "record") {
-        $input | transpose key value | each { |row|
-            let new_key = if ($prefix | is-empty) { $row.key } else { $"($prefix).($row.key)" }
-            $row.value | to-kv $new_key
-        } | flatten
-    } else if ($type =~ "list") {
-        $input | enumerate | each { |item|
-            let new_key = if ($prefix | is-empty) { $"($item.index)" } else { $"($prefix).($item.index)" }
-            $item.item | to-kv $new_key
-        } | flatten
-    } else {
-        [[key, value]; [$prefix, $input]]
+    match ($input | describe --detailed | get type) {
+        "record" if ($input | is-not-empty) => {
+            $input
+            | items {|k, v| $v | to-kv (do $join $k) }
+            | flatten
+        }
+        "list" | "table" if ($input | is-not-empty) => {
+            $input
+            | enumerate
+            | each {|it| $it.item | to-kv (do $join ($it.index | into string)) }
+            | flatten
+        }
+        _ => { [{ key: $prefix, value: $input }] }
     }
 }
 
 # --- Development Tools ---
-
 
 # --- Git Status Idioms ---
 

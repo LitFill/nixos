@@ -28,7 +28,6 @@
         mapAttrsToList
         mkBefore
         mkOption
-        pipe
         types
         ;
 
@@ -38,13 +37,12 @@
           default = { };
           description = "Alias nushell: nama -> perintah. Nilai null diabaikan";
         };
-        config."config.nu".content = mkBefore (
+        config."config.nu".content =
           config.nushellAliases
-          |> (filterAttrs (_: cmd: cmd != null))
-          |> (mapAttrsToList (name: cmd: "alias ${name} = ${cmd}"))
-          |> (concatStringsSep "\n")
-
-        );
+          |> filterAttrs (_: cmd: cmd != null)
+          |> mapAttrsToList (name: cmd: "alias ${name} = ${cmd}")
+          |> concatStringsSep "\n"
+          |> mkBefore;
       };
     in
     {
@@ -54,7 +52,7 @@
           imports = [ aliasModule ];
 
           "config.nu".content = /* nu */ ''
-            source ${./functions.nu}
+            source ${./config.nu}
           '';
 
           nushellAliases = {
