@@ -9,6 +9,8 @@
 
           nushell
           starship
+
+          tailscale
         ];
       in
       {
