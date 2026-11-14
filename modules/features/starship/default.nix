@@ -5,7 +5,6 @@
       {
         programs.starship = {
           enable = true;
-          enableBashIntegration = false;
           package = self'.packages.starship;
         };
       }
