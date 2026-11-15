@@ -11,6 +11,7 @@ in
           user
           bootloader
           nix-settings
+          zram
         ];
       in
       {
