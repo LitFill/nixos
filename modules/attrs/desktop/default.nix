@@ -1,7 +1,8 @@
 { self, moduleWithSystem, ... }: {
   flake.nixosModules = {
     desktop = moduleWithSystem (
-      { pkgs, ... }:
+      # pkgs,
+      { ... }:
       let
         modules = with self.nixosModules; [
           core
@@ -23,10 +24,8 @@
       {
         imports = modules;
 
-        environment.systemPackages = with pkgs; [
-          # firefox
-          lazygit
-        ];
+        environment.systemPackages = # with pkgs;
+          [ ];
       }
     );
   };
