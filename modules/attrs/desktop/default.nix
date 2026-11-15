@@ -17,12 +17,14 @@
           nushell
           starship
 
-          # plasmaDE
-          # kdeconnect
+          nixvim
 
-          umbriel
-          noctalia
-          noctalia-greeter
+          plasmaDE
+          kdeconnect
+
+          # umbriel
+          # noctalia
+          # noctalia-greeter
 
           tailscale
 
