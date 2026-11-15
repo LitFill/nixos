@@ -7,6 +7,9 @@
         modules = with self.nixosModules; [
           core
           networking
+          printing
+          graphics
+          audio
 
           nushell
           starship
