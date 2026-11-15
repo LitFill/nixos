@@ -10,8 +10,12 @@
           nushell
           starship
 
-          plasmaDE
-          kdeconnect
+          # plasmaDE
+          # kdeconnect
+
+          umbriel
+          noctalia
+          noctalia-greeter
 
           tailscale
         ];

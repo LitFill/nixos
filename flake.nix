@@ -10,6 +10,10 @@
     nixvim.url = "github:nix-community/nixvim";
 
     koki.url = "github:LitFill/koki";
+
+    umbriel.url = "github:noctalia-dev/umbriel/cachix";
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+    noctalia-greeter.url = "github:noctalia-dev/noctalia-greeter";
   };
 
   outputs =
