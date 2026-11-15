@@ -3,4 +3,4 @@ result-*
 squashfs-root
 hardware-configuration.nix
 *.log
-nixos.qcow2
+*.qcow2
