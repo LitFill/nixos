@@ -12,6 +12,8 @@
           graphics
           audio
 
+          keyd
+
           nushell
           starship
 
@@ -30,8 +32,7 @@
       {
         imports = modules;
 
-        environment.systemPackages = # with pkgs;
-          [ ];
+        # environment.systemPackages = with pkgs; [ ];
       }
     );
   };
