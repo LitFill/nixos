@@ -27,6 +27,9 @@
         automatic = true;
         dates = "03:00";
       };
+
+      # Allow unfree packages
+      nixpkgs.config.allowUnfree = true;
     };
   };
 }
