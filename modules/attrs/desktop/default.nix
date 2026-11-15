@@ -7,6 +7,7 @@
         modules = with self.nixosModules; [
           core
           networking
+          ssh
           printing
           graphics
           audio
