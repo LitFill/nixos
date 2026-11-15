@@ -19,6 +19,8 @@
           noctalia-greeter
 
           tailscale
+
+          wezterm
         ];
       in
       {
