@@ -61,6 +61,7 @@
   # Firewall: allow KDE Connect (1714-1764 TCP/UDP)
   networking.firewall = {
     enable = true;
+    trustedInterfaces = [ "tailscale0" ];
     allowedTCPPortRanges = [
       {
         from = 1714;
@@ -76,7 +77,10 @@
   };
 
   # Tailscale VPN
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraUpFlags = [ "--ssh" ];
+  };
 
   # Select internationalisation properties.
   i18n.defaultLocale = "id_ID.UTF-8";
